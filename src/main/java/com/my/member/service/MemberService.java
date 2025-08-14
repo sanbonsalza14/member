@@ -4,6 +4,7 @@ import com.my.member.dto.MemberDto;
 import com.my.member.entity.Member;
 import com.my.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,5 +61,25 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         repository.deleteById(id);
+    }
+
+    public MemberDto findmember(Long updateId) {
+        //검색을 해 보기
+        //비어잇는지 검사해서 찾으면 DTO로 변환후 돌려주고
+        //없으면 null 리턴
+        Member member = repository.findById(updateId).orElse(null);
+        //member가 null인지 확인
+        if (ObjectUtils.isEmpty(member)) {
+            return null;
+        } else {
+            return MemberDto.fromMemberEntity(member);
+        }
+    }
+
+    public void updatemember(MemberDto dto) {
+        //1.DTO->mdpsxlxlfh 변환
+        Member member = MemberDto.toDto((dto));
+        //2. 수정 요청
+        repository.save(member);
     }
 }
